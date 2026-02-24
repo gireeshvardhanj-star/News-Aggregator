@@ -3,15 +3,17 @@
   min-height: 100vh;
   background: radial-gradient(circle at top, #111827 0, #020617 55%);
   color: var(--text-main);
+  overflow: hidden;
 }
 
-.app-shell.single {
+.app-shell--auth {
   flex-direction: column;
 }
 
 /* Sidebar */
 .sidebar {
   width: 260px;
+  min-width: 260px;
   padding: 20px 16px;
   border-right: 1px solid var(--border-subtle);
   background: var(--sidebar-bg);
@@ -92,6 +94,8 @@
   display: flex;
   flex-direction: column;
   padding: 16px 24px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 /* Two-pane layout */
@@ -100,12 +104,14 @@
   gap: 16px;
   flex: 1;
   min-height: 0;
+  overflow: hidden;
 }
 
 .list-pane {
   width: 40%;
   min-width: 260px;
   max-width: 420px;
+  flex-shrink: 0;
   border-right: 1px solid var(--border-subtle);
   padding-right: 12px;
   overflow-y: auto;
@@ -113,6 +119,7 @@
 
 .reader-pane {
   flex: 1;
+  min-width: 0;
   padding-left: 12px;
   overflow-y: auto;
 }
@@ -121,10 +128,11 @@
 @media (max-width: 768px) {
   .app-shell {
     flex-direction: column;
+    overflow: auto;
   }
-
   .sidebar {
     width: 100%;
+    min-width: unset;
     flex-direction: row;
     align-items: center;
     gap: 12px;
@@ -132,20 +140,18 @@
     border-bottom: 1px solid var(--border-subtle);
     overflow-x: auto;
   }
-
   .category-nav {
     flex-direction: row;
     flex-wrap: nowrap;
   }
-
   .main {
     padding: 12px 12px 24px;
+    overflow: visible;
   }
-
   .content {
     flex-direction: column;
+    overflow: visible;
   }
-
   .list-pane {
     width: 100%;
     max-width: none;
@@ -154,11 +160,9 @@
     padding-right: 0;
     padding-bottom: 12px;
   }
-
   .reader-pane {
     padding-left: 0;
   }
-
   .reader {
     padding-top: 16px;
   }
