@@ -11,9 +11,17 @@ function ArticlePreview({ article, isActive, onClick }) {
         {article.category} • {article.author} • {article.date}
       </p>
       <p className="article-summary">{article.summary}</p>
-      <button type="button" className="read-link">
-        Read article →
-      </button>
+      {article.url && (
+        <a
+          href={article.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="read-link"
+          onClick={(e) => e.stopPropagation()}
+        >
+          Read article →
+        </a>
+      )}
     </article>
   );
 }
