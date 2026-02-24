@@ -1,0 +1,4 @@
+@import "./Data/global.css";
+@import "./pages/layout.css";
+@import "./components/components.css";
+@import "./pages/auth.css";
