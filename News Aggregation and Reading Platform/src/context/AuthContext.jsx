@@ -2,14 +2,22 @@ import React, { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext(null);
 
+function safeParseJSON(str, fallback = null) {
+  try {
+    return str ? JSON.parse(str) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem("user");
-    return saved ? JSON.parse(saved) : null;
+    return safeParseJSON(saved, null);
   });
 
   const signup = (name, email, password) => {
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    const users = safeParseJSON(localStorage.getItem("users"), []);
     const exists = users.find((u) => u.email === email);
     if (exists) return { success: false, error: "Email already registered!" };
 
@@ -25,7 +33,7 @@ export function AuthProvider({ children }) {
   };
 
   const signin = (email, password) => {
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    const users = safeParseJSON(localStorage.getItem("users"), []);
     const found = users.find(
       (u) => u.email === email && u.password === password
     );
