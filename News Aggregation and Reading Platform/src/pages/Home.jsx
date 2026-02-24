@@ -7,11 +7,11 @@ import ArticleList from "../components/ArticleList.jsx";
 import ArticleReader from "../components/ArticleReader.jsx";
 import { categories } from "../Data/newsData.js";
 import { useNews } from "../hooks/useNews.js";
+import "./layout.css";
 
 function Home() {
   const { user, logout } = useAuth();
   const [showSignup, setShowSignup] = useState(false);
-
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedArticleId, setSelectedArticleId] = useState(null);
@@ -33,10 +33,10 @@ function Home() {
     [allArticles, selectedArticleId]
   );
 
-  // Not logged in: show auth components as part of main page
+  // Not logged in
   if (!user) {
     return (
-      <div className="app-shell">
+      <div className="app-shell app-shell--auth">
         <div className="auth-page">
           {showSignup ? (
             <SignupForm
@@ -54,45 +54,56 @@ function Home() {
     );
   }
 
-  // Logged in: show news layout
+  // Logged in: sidebar + list + reader
   return (
     <div className="app-shell">
-      <header className="app-header">
-        <h1>News Aggregator</h1>
-        <div className="user-info">
-          Hi, {user.name}&nbsp;&nbsp;
-          <button onClick={logout} className="logout-btn">Logout</button>
+      {/* Left Sidebar */}
+      <aside className="sidebar">
+        <div className="logo">News Aggregator</div>
+        <div>
+          <p style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
+            Hi, <strong>{user.name}</strong>
+          </p>
+          <button onClick={logout} className="cat-btn" style={{ marginTop: "6px" }}>
+            Logout
+          </button>
         </div>
-      </header>
-      <CategoryNav
-        categories={categories}
-        selectedCategory={selectedCategory}
-        onSelectCategory={(cat) => {
-          setSelectedCategory(cat);
-          setSelectedArticleId(null);
-        }}
-      />
-      <div className="search-bar">
-        <label htmlFor="search">Search</label>&nbsp;
-        <input
-          id="search"
-          type="search"
-          aria-label="Search"
-          placeholder="Search articles"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+        <CategoryNav
+          categories={categories}
+          selectedCategory={selectedCategory}
+          onSelectCategory={(cat) => {
+            setSelectedCategory(cat);
+            setSelectedArticleId(null);
+          }}
         />
+        <label className="search-label">
+          Search
+          <input
+            type="search"
+            placeholder="Search articles"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </label>
+      </aside>
+
+      {/* Main area */}
+      <div className="main">
+        <div className="content">
+          <div className="list-pane">
+            <ArticleList
+              articles={filteredArticles}
+              isLoading={isLoading}
+              error={error}
+              onSelect={setSelectedArticleId}
+              selectedArticleId={selectedArticleId}
+            />
+          </div>
+          <div className="reader-pane">
+            <ArticleReader article={selectedArticle} />
+          </div>
+        </div>
       </div>
-      <main className="app-main">
-        <ArticleList
-          articles={filteredArticles}
-          isLoading={isLoading}
-          error={error}
-          onSelect={setSelectedArticleId}
-          selectedArticleId={selectedArticleId}
-        />
-        <ArticleReader article={selectedArticle} />
-      </main>
     </div>
   );
 }
