@@ -23,8 +23,8 @@ function Home() {
     const q = searchTerm.toLowerCase();
     return allArticles.filter(
       (a) =>
-        a.title.toLowerCase().includes(q) ||
-        a.summary.toLowerCase().includes(q)
+        (a.title || "").toLowerCase().includes(q) ||
+        (a.summary || "").toLowerCase().includes(q)
     );
   }, [allArticles, searchTerm]);
 
@@ -57,52 +57,41 @@ function Home() {
   // Logged in: show news layout
   return (
     <div className="app-shell">
-      <aside className="sidebar">
-        <h2 className="logo">News Aggregator</h2>
-
+      <header className="app-header">
+        <h1>News Aggregator</h1>
         <div className="user-info">
-          <span className="user-name">Hi, {user.name}</span>
-          <button className="logout-btn" onClick={logout}>
-            Logout
-          </button>
+          Hi, {user.name}&nbsp;&nbsp;
+          <button onClick={logout} className="logout-btn">Logout</button>
         </div>
-
-        <CategoryNav
-          categories={categories}
-          selectedCategory={selectedCategory}
-          onSelectCategory={(cat) => {
-            setSelectedCategory(cat);
-            setSelectedArticleId(null);
-          }}
+      </header>
+      <CategoryNav
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onSelectCategory={(cat) => {
+          setSelectedCategory(cat);
+          setSelectedArticleId(null);
+        }}
+      />
+      <div className="search-bar">
+        <label htmlFor="search">Search</label>&nbsp;
+        <input
+          id="search"
+          type="search"
+          aria-label="Search"
+          placeholder="Search articles"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
-
-        <label className="search-label">
-          <span>Search</span>
-          <input
-            type="search"
-            aria-label="Search"
-            placeholder="Search articles"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </label>
-      </aside>
-
-      <main className="main">
-        <div className="content">
-          <div className="list-pane">
-            <ArticleList
-              articles={filteredArticles}
-              isLoading={isLoading}
-              error={error}
-              onSelect={setSelectedArticleId}
-              selectedArticleId={selectedArticleId}
-            />
-          </div>
-          <div className="reader-pane">
-            <ArticleReader article={selectedArticle} />
-          </div>
-        </div>
+      </div>
+      <main className="app-main">
+        <ArticleList
+          articles={filteredArticles}
+          isLoading={isLoading}
+          error={error}
+          onSelect={setSelectedArticleId}
+          selectedArticleId={selectedArticleId}
+        />
+        <ArticleReader article={selectedArticle} />
       </main>
     </div>
   );
