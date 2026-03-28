@@ -10,6 +10,10 @@ const CATEGORY_MAP = {
   Science: "science",
 };
 
+// Default thumbnail (change to your own URL or local image if you want)
+const DEFAULT_IMAGE =
+  "https://images.pexels.com/photos/261949/pexels-photo-261949.jpeg";
+
 export function useNews(category = "All") {
   const [articles, setArticles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -46,7 +50,8 @@ export function useNews(category = "All") {
               a.description ||
               "Read the full article at the source.",
             url: a.url,
-            image: a.urlToImage,
+            // main thumbnail: API image, else default
+            image: a.urlToImage || DEFAULT_IMAGE,
           }));
 
         if (!mapped.length) {
@@ -54,7 +59,14 @@ export function useNews(category = "All") {
             category === "All"
               ? staticArticles
               : staticArticles.filter((a) => a.category === category);
-          setArticles(fallback);
+
+          setArticles(
+            fallback.map((a, index) => ({
+              ...a,
+              id: a.id ?? index + 1,
+              image: a.image || DEFAULT_IMAGE,
+            }))
+          );
         } else {
           setArticles(mapped);
         }
@@ -64,7 +76,14 @@ export function useNews(category = "All") {
           category === "All"
             ? staticArticles
             : staticArticles.filter((a) => a.category === category);
-        setArticles(fallback);
+
+        setArticles(
+          fallback.map((a, index) => ({
+            ...a,
+            id: a.id ?? index + 1,
+            image: a.image || DEFAULT_IMAGE,
+          }))
+        );
         setError(null);
       })
       .finally(() => setIsLoading(false));
